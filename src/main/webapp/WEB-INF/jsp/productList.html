@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<%@page pageEncoding="utf-8"%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="./static/bootstrap/js/jquery/2.0.0/jquery.min.js"></script>
+<link href="./static/bootstrap/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
+<script src="./static/bootstrap/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+<script src="./static/Vue/vue.min.js"></script>
+<script src="./static/Vue/axios.min.js"></script>
+
+
+</head>
+<body id="all">
+	<div class="input-group">
+		<input type="text" class="form-control" placeholder="请输入查找商品..." >
+			<span class="input-group-btn">
+			<button class="btn btn-default" type="button">搜索</button>
+			</span>
+	</div>
+	<div class="alert alert-info" role="alert" style="display:none;">信息提示</div>
+	<div class="alert alert-warning" role="alert" style="display:none;">警告提示</div>
+					
+
+	<div class="product"  v-on:onclick="c">
+		<img width="100%" height="240" src="./static/img/product/newProduct.jpg">
+		<div style="margin:5px;width:90%;">
+			<!-- <div class="name">{{product.name}}</div>
+			<div class="description">{{product.description}}</div>
+			<div class="sales">月销：{{product.sales }}</div>
+			<div class="cart">
+				<button type="button"  data-toggle="modal" data-target="#myModal" class="shoppingCart" v-on:click="cart(${product.id })">
+				<span class="glyphicon glyphicon-shopping-cart" ></span></button>
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" style="text-align:left;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+								<h4 class="modal-title">添加到购物车</h4>
+							</div>
+							<div class="modal-body">
+								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-default" v-for="taste in tastes">
+									<input type="radio" >{{taste.name}}
+									</label>
+								</div>
+							</div>
+							<input type="text" id="num" class="form-control" style="width:50%;"> 
+							<div class="modal-footer">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="price">￥${product.price }</div> -->
+		</div>
+	</div>
+			<!-- 		
+			<nav>
+				 <ul class="pagination">
+				 <li >
+				 	<span v-if="nowPage==1" style="background-color:#E0E0E0">上一页</span>
+					<span v-else>
+					    <a href="">上一页</a>
+					</span>
+				 </li>
+				 <li v-for="i in pageNum">
+					<span v-if="nowPage==i" style="background-color:#E0E0E0">1</span>
+					<span v-else>
+						<a href="">{{i}}</a>
+					</span> 
+				</li>
+				<li>
+					<span v-if="nowPage==pageNum" style="background-color:#E0E0E0">下一页</span>
+					<span v-else>
+					    <a href="">下一页</a>
+					</span>
+				<div class="resultNums">共：条记录</div>
+				</ul>
+			</nav>  -->
+		
+</body>
+<script>
+new Vue({
+	el:"#all",
+	data:{
+		category:'',
+		pageNum:0,
+		nowPage:1,
+		products:[]
+	},
+	method:{
+		
+	 	getProducts:function(url){
+			self=this;
+			alert("1");
+			axios.get(url).then(function(response){
+				self.products=response.data;
+			})
+		}, 
+		c:function(){
+			alert("213");
+		}
+	},
+	mounted:function(){
+		alert("1");
+		//getProducts("http://localhost:8080/MyOil/getProducts");
+	}
+	
+})
+
+</script>
+</html>

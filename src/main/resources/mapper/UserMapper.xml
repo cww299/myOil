@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.UserMapper">
+	<insert id="add" parameterType="User">
+		insert into user(username,password,name,phone,balance,power) values(#{username},#{password},#{name},#{phone},#{balance},#{power})
+	</insert>
+	<delete id="delete" parameterType="int">
+		delete from user where id=#{id}
+	</delete>
+	<update id="update">
+		update user set username=#{username},password=#{password}
+		<if test="name!=null">
+			,name=#{name}
+		</if>
+		<if test="phone!=null">
+			,phone=#{phone}
+		</if>
+		<if test="balance!=null">
+			,balance=#{balance}
+		</if>
+		<if test="power!=null">
+			,power=#{power}
+		</if>
+		where id=#{id}
+	</update>
+	<select id="selectAll" resultType="int">
+		select count(*) from user 
+		<where>
+			1
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+			<if test="username!=null and username!=''">
+				and username=#{username}
+			</if>
+			<if test="name!=null and name!=''">
+				and name=#{name}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getUsers" resultType="User">
+		select * from user
+		<where>
+			1
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+			<if test="username!=null and username!=''">
+				and username=#{username}
+			</if>
+			<if test="name!=null and name!=''">
+				and name=#{name}
+			</if>
+			<if test="phone!=null and phone!=''">
+				and phone=#{phone}
+			</if>
+			<if test="power!=null and power!=''">
+				and power=#{power}
+			</if>
+		</where>
+		<if test="balance!=null and balance!=''">
+			order by balance
+		</if>
+		<if test="page!=null and page!=''">
+			limit #{page.start},#{page.getSelect}
+		</if>
+	</select>
+	
+	<select id="selectByUsername" resultType="User">
+		select * from user where username=#{username}
+	</select>
+	<select id="login" resultType="User">
+		select * from user where username=#{username} and password=#{password}
+	</select>
+</mapper>

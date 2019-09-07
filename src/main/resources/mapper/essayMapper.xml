@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.EssayMapper">
+	<select id="getEssayById" resultType="Essay">
+		select * from essay where id=#{id}
+	</select>
+
+	<insert id="addEssay">
+		insert into essay(title,views,time,authorId,category,content)
+					values(#{title},#{views},#{time},#{authorId},#{category},#{content})
+	</insert>
+	
+	<delete id="deleteEssay">
+		delete from essay where id=#{id}
+	</delete>
+	
+	<update id="updateEssay">
+		update essay set title=#{title},views=#{views},time=#{time},authorId=#{authorId},category=#{category},content=#{content}
+		where id=#{id}
+	</update>
+	
+	<update id="addEssayViews">
+		update essay set views=views+1 where id=#{id}
+	</update>
+	
+	<select id="selectEssay" resultType="Essay" parameterType="Essay">
+		select id,title,views,time,authorId,isHot,category from essay
+		<where>
+			1
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+			<if test="title!=null and title!=''">
+				and title=#{title}
+			</if>
+			<if test="authorId!=null and authorId!=''">
+				and authorId=#{authorId}
+			</if>
+			<if test="isHot!=null and isHot!=''">
+				and isHot=#{isHot}
+			</if>
+			<if test="category!=null and category!=''">
+				and category=#{category}
+			</if>
+		</where>
+		<if test="views!=null and views!=''">
+				order by views desc
+		</if>
+		<if test="time!=null and time!=''">
+			order by time desc
+		</if>
+		<if test="page!=null and page!=''">
+			limit #{page.start},#{page.getSelect}
+		</if>		
+	</select>
+	
+	
+	<!-- 大于号要用&gt -->
+	<select id="getNext" resultType="Essay" parameterType="Essay">
+		select * from essay  where category=#{category} and id &gt;#{id} order by id limit 1
+	</select>
+	<!-- 小于号要用&lt -->
+	<select id="getBefore" resultType="Essay" parameterType="Essay">
+		select * from essay  where category=#{category} and id &lt; #{id} order by id desc limit 1
+	</select>
+	<!-- 获取记录数目 -->
+	<select id="getNumOfCategory" resultType="int">
+		select count(*) from essay where category=#{category}
+	</select>
+	
+	
+	<select id="getEssayList" resultType="Essay" parameterType="int">
+		select id,title,views from essay order by views desc limit 0,#{num}
+	</select>
+	
+	<select id="getEssayListByCategory" resultType="Essay" >
+		select id,title,views,time,authorId,category from essay where category=#{1} limit 0,#{0}
+	</select>
+	
+	<select id="getEssayListByTitle" resultType="Essay">
+		select id,title,views,time,authorId,category from essay where title=#{title}
+	</select>
+	
+	<select id="getEssayListByAuthorId" resultType="Essay">
+		select id,title,views,time,authorId,category from essay where authorId=#{authorId}
+	</select>
+	
+	
+</mapper>

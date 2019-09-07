@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.CategoryMapper">
+
+	<resultMap type="Category" id="categoryBean">
+		<id column="cid" property="id"></id>
+		<result column="cname" property="name"></result>
+		
+		<collection property="list" ofType="Product">
+			<id column="pid" property="id"/>
+			<result column="pname" property="name"/>
+			<result column="category" property="category"/>
+			<result column="img" property="img"/>
+			<result column="price" property="price"/>
+			<result column="stock" property="stock"/>
+		</collection>
+	</resultMap>
+	
+	
+	<select id="getList" resultMap="categoryBean">
+		SELECT categoryPro. * ,product.*,categoryPro.id cid,categoryPro.name cname,
+				product.id pid,product.name pname
+		FROM categoryPro
+		left join product ON product.category = categoryPro.name
+	</select>
+	
+	<insert id="addCategory" parameterType="String">
+		insert into categorypro(name) values(#{name})
+	</insert>
+	
+	<delete id="deleteCategory">
+		delete from categorypro where id=#{id}
+	</delete>
+	
+	<update id="updateCategory" parameterType="Category">
+		update categorypro set name=#{_parameter.name} where id=#{_parameter.id}
+	</update>
+</mapper>

@@ -1,0 +1,85 @@
+a{
+	blr:expression(this.onFocus=this.blur());
+	outline: none;
+	border:none;
+	color:#444444;
+}
+a:focus{
+    outline:none;
+}
+a:hover{
+	text-decoration:none;
+	color:red;
+}
+#firstModel{
+	width:80%;
+	height:440px;
+	border:0;
+	overflow:hidden;
+}
+#hotNews {
+	float: right;
+	width:24%;
+	border:solid 1px #E0E0E0;
+	border-top:solid 1px red;
+	margin-top:5px;
+}
+#userInfo{
+	width:17%;
+	float:left;
+	height:400px;
+	margin-top:30px;
+	border:solid 1px #E0E0E0;
+}
+#showMore{
+	width:56%;
+	float:right;
+	margin-right:1%;
+	margin-top:10px;
+}
+#showMorePane{
+	height:400px;
+	width:56%;
+	float:right;
+	margin-right:1%;
+}
+#oilEconomics{
+	float:left;
+	margin-left:10%;
+	width:80%;
+	height:500px;
+}
+#decisionSystem{
+	float:right;
+	margin-right:10%;
+	width:80%;
+	height:500px;
+}
+#technology{
+	float:left;
+	margin-left:10%;
+	width:80%;
+	height:500px;
+}
+#news{
+	float:right;
+	margin-right:10%;
+	width:39%;
+	height:330px;
+	margin-left:1%;
+}
+
+
+.block{
+	width:100%;
+	height:3px;
+	background-color:yellow;
+}
+.smallBlock{
+	width:80%;
+	height:2px;
+	background-color:#ececec;
+	float:left;
+	margin-left:10%;
+	margin-top:10px;
+}

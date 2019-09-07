@@ -1,0 +1,71 @@
+#breadcrumbNav{
+		float:left;
+		width:80%;
+		margin-left:10%;
+		margin-top:10px;
+	}
+	#pageContent{
+		width:55%;
+		float:left;
+		margin-left:10%;	
+		position:relative;
+	}
+	.essayTime{
+		position:relative;
+		width:20%;
+		display:inline;
+	}
+	.essayViews{
+		position:relative;
+		width:10%;
+		display:inline
+	}
+	.essayBlock{
+		width:100%;
+		float:left;
+		height:1px;
+		margin-top:8px;
+		background-color:#333;
+	}
+	pre{
+		font-size:18px;
+		border:0;
+		background-color:0;
+		  white-space: pre-wrap;       /* css-3 */
+	    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	    white-space: -pre-wrap;      /* Opera 4-6 */
+	    white-space: -o-pre-wrap;    /* Opera 7 */
+	    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+		
+	}
+	pre {
+  
+    } 
+	#berfor_next{
+		margin-top:15px;
+	}
+	.befor{
+		font-weight:bold;
+		float:left;
+	}
+	.next{
+		font-weight:bold;
+		float:right;
+	}
+	#about{
+		margin-top:20px;
+	}
+	#others{
+		float:right;
+		margin-right:10%;
+		width:24%;
+		border:0;
+	}
+	#weekHots{
+		border-top:solid 1px red;
+		margin-top:20px;
+	}
+	#weekHotsTable{
+		border:solid 1px #E0E0E0;
+		line-height:30px;
+	}

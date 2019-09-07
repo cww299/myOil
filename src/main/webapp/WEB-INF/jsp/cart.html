@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<%@page pageEncoding="utf-8"%>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="./static/bootstrap/js/jquery/2.0.0/jquery.min.js"></script>
+<link href="./static/bootstrap/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
+<script src="./static/bootstrap/js/bootstrap/3.3.6/bootstrap.min.js"></script>
+<script src="./static/Vue/vue.min.js"></script>
+<script src="./static/Vue/axios.min.js"></script>
+<style>
+a{
+	blr:expression(this.onFocus=this.blur());
+	outline: none;
+	border:none;
+	color:#444444;
+}
+a:focus{
+    outline:none;
+}
+a:hover{
+	text-decoration:none;
+	color:red;
+}
+</style>
+</head>
+<body>
+<div class="panel panel-info" style="width:80%;float:left;margin-top:5px;margin-left:10%;" id="panel">
+	<div class="panel-heading">
+		购物车
+	</div>
+	<div class="paenel-body">
+		<table class="table" style="width:80%;margin-left:10%;;float:left;">
+			<thead>
+				<th><input type="checkbox" id="allProduct" v-on:click="chooseProduct(-1)">全选/全部选</th>
+				<th>商品</th>
+				<th>规格/口味</th>
+				<th>价格</th>
+				<th>数量</th>
+			</thead>
+			<tr v-for="product,index in products">
+				<td><input type="checkbox" v-on:click="chooseProduct(index)" name="choose"></td>
+				<td>{{product.name}}</td>
+				<td v-if="product.tasteName!='default'">{{product.tasteName}}</td>
+				<td v-else>----</td>
+				<td v-if="product.tastePrice!=null">{{product.tastePrice}}</td>
+				<td v-else>{{product.price}}</td>
+				<td>{{product.buyNum}}</td>
+			</tr>
+			<tr style="text-align:right;">
+				<td colspan="6" style="color:Red;">总额：￥{{sum}}</td>
+			</tr>
+		</table>
+		<div style="float:right;margin-right:10%;">
+			<button type="button" class="btn btn-primary" v-on:click="buy">点击购买</button>
+			<button  type="button" data-toggle="modal" data-target="#myModal" id="btnModal" style="display:none;"></button>
+			<div class="modal fade" id="myModal"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog">
+			        <div class="modal-content">
+			          <div class="modal-header">
+			            <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+			            <h4 class="modal-title">确认订单</h4>
+			          </div>
+			          <div class="modal-body">
+			          付款方式：
+			            <select class="form-control" v-model="payModel">
+			            	<option value="账户余额">账户余额</option>
+			            	<option value="微信">微信</option>
+			            	<option value="支付宝">支付宝</option>
+			            </select>
+			            <div style="width:80%;margin:0 auto;margin-top:5px;">	
+			            	<p>订单金额：<font color="Red">￥{{sum}}</font></p>
+				            <div v-if="payModel=='账户余额'">
+				            	请输入密码：<input type="password" class="form-control" id="buyPwd" >
+				            </div>
+				            <div v-else-if="payModel=='微信'">
+				            	<p>请扫描下方微信二维码付款：</p>
+				            	<img src="./static/img/system/微信.jpg" width="200px;" height="300px;">
+				            </div>
+				            <div v-else="payModel=='支付宝'">
+				            	<p>请扫描下方支付宝二维码付款：</p>
+				            	<img src="./static/img/system/支付宝.jpg" width="200px;" height="300px;">
+				            </div>
+			            </div>
+			          </div>
+			          <div class="modal-footer">
+			            <button class="btn btn-primary" type="button" v-on:click="isbuy">确认</button>
+			          </div>
+			        </div><!-- /.modal-content -->
+			      </div><!-- /.modal-dialog -->
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+<script>
+new Vue({
+	el:"#panel",
+	data:{
+		products:[],
+		sum:0,
+		payModel:'账户余额'
+	},
+	methods:{
+		getProducts:function(self){  //获取购物车的商品列表
+			url="http://localhost:8080/MyOil/cartContent?v="+Math.random()*100;
+			axios.get(url).then(function(response){
+				self.products=response.data;
+				
+			})
+		},
+		chooseProduct:function(id){ //商品选择并计算价格
+			this.sum=0;
+			var choose=document.getElementsByName("choose"); //商品选择按钮组
+			if(id==-1) //是否全选按钮
+				for(i in choose)
+					choose[i].checked=document.getElementById("allProduct").checked;
+			//计算价格
+			for(var i=0;i<this.products.length;i++){
+				var product=this.products[i];
+				if(choose[i].checked){
+					this.sum+=Number(product.tastePrice).toFixed(1)*Number(product.buyNum).toFixed(0);
+				}  
+			}
+		},
+		buy:function(){   //确定订单
+			self=this;
+			if(self.sum==0){
+				alert("请选择商品！");
+				return;
+			}
+			document.getElementById("btnModal").click();
+			
+		},
+		isbuy:function(){  //确认支付
+			self=this;
+			url="http://localhost:8080/MyOil/pay";
+			var ps=[];
+			var choose=document.getElementsByName("choose");
+			for(i=0;i<this.products.length;i++)
+				if(choose[i].checked)
+					ps.push(this.products[i]);
+			var param=new URLSearchParams();
+			if(this.payModel=="账户余额")
+				param.append('password',document.getElementById("buyPwd").value);
+			else
+				param.append('password','default');
+			param.append('payModel',this.payModel);
+			param.append('products',JSON.stringify(ps));
+			param.append('sum',this.sum);
+			axios.post(url,param).then(function(response){
+				if(response.data=="passwordMiss"){
+					alert("密码错误！");
+					return;
+				}else if(response.data=="noBalance"){
+					alert("您的账户余额不足！");
+				}else if(response.data=="success"){
+					$("#myModal").modal('hide');
+					self.sum=0;
+					self.$options.methods.getProducts(self);
+					var choose=document.getElementsByName("choose");
+					for(i in choose)
+						choose[i].checked=false;
+					alert("支付成功");
+				}
+			}) 
+		}
+	},
+	mounted:function(){
+		this.$options.methods.getProducts(this);
+	}
+	
+})
+
+</script>
+</html>

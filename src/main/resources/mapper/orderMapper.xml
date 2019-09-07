@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.OrderMapper">
+<!-- 一对多映射配置 -->
+<resultMap type="Order" id="OrderBean">
+	<id column="orderTableid" property="id"/>
+	<result column="userId" property="userId"/>
+	<result column="payModel" property="payModel"/>
+	<result column="payTime" property="payTime"/>
+	<result column="payMoney" property="payMoney"/>
+	<!-- 一对多 -->
+	<collection property="list" ofType="OrderItem">
+		<id column="itemTableid" property="id"></id>
+		<result column="pId" property="pId"/>
+		<result column="pname" property="pname"/>
+		<result column="tname" property="tname"/>
+		<result column="tprice" property="tprice"/>
+		<result column="buyNum" property="buyNum"/>
+	</collection>
+</resultMap>
+
+<select id="getOrderContent" parameterType="Order" resultMap="OrderBean">
+	SELECT order_.*,
+		orderItem.*,
+		order_.id orderTableid,
+		orderItem.id itemTableid
+	FROM order_ left join orderItem on 
+		order_.id=orderItem.orderId
+	<where>
+		1
+		<if test="id!=null and id!=0">
+			and order_.id=#{id}
+		</if>
+		<if test="userId!=null and userId!=0">
+			and userId=#{userId}
+		</if>
+		<if test="payModel!=null and payModel!=''" >
+			and payModel=#{payModel}
+		</if>
+		<if test="orderType!=null and orderType!=''">
+			and orderType=#{orderType}
+		</if>
+	</where>
+	<if test="payTime!=null and payTime!=''">
+		order by payTime desc
+	</if>
+	<if test="page!=null">
+		limit #{page.start},#{page.getSelect}
+	</if>
+</select>
+
+<select id="getOrderList" resultType="Order" parameterType="Order">
+	SELECT * FROM order_ 
+	<where>
+		1
+		<if test="id!=null and id!=0">
+			and id=#{id}
+		</if>
+		<if test="userId!=null and userId!=0">
+			and userId=#{userId}
+		</if>
+		<if test="payModel!=null and payModel!=''" >
+			and payModel=#{payModel}
+		</if>
+		<if test="orderType!=null and orderType!=''">
+			and orderType=#{orderType}
+		</if>
+	</where>
+	<if test="payTime!=null and payTime!=''">
+		order by payTime desc
+	</if>
+	<if test="page!=null">
+		limit #{page.start},#{page.getSelect}
+	</if>
+</select>
+
+<select id="getOrderListResult" resultType="int" parameterType="Order">
+	select count(*) from order_ where userId=#{userId}
+</select>
+<insert id="addOrder" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+	insert into order_(userId,payModel,payTime,payMoney,orderType)
+				values(#{userId},#{payModel},#{payTime},#{payMoney},#{orderType})
+</insert>
+<delete id="deleteOrder" parameterType="int">
+	delete from order_ where id=#{id}
+</delete>
+
+
+<insert id="addOrderItem" parameterType="Product">
+	insert into orderItem(orderId,pId,pName,tname,tprice,buyNum)
+				values(#{orderId},#{id},#{name},#{tasteName},#{tastePrice},#{buyNum})
+</insert>
+
+
+</mapper>

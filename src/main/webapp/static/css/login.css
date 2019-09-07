@@ -1,0 +1,27 @@
+#pane{
+	width:80%;
+	height:600px;
+	margin:0 auto;
+}
+#login{
+	width:39%;
+	float:left;
+	margin-left:5%;
+	text-align:center;	
+	margin-top:150px;
+}
+input{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+input.form-control{
+	width:250px;
+	padding-left:10px;
+	float:left;
+}
+.panel-body{
+	height:600px;
+}
+#imgs{
+	float:right;
+}

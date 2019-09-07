@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.ProductMapper">
+
+	<resultMap type="Product" id="productBean">
+		<id column="pid" property="id"></id>
+		<result column="pname" property="name"></result>
+		<result column="category" property="category"></result>
+		<result column="img" property="img"></result>
+		<result column="pprice" property="price"></result>
+		<result column="stock" property="stock"></result>
+		<result column="sales" property="sales"></result>
+		
+		<collection property="tastes" ofType="Taste">
+			<id column="tid" property="id"/>
+			<result column="tname" property="name"/>
+			<result column="tprice" property="price"/>
+		</collection>
+	</resultMap>
+
+	<select id="getProductList" resultType="Product" parameterType="Product">
+		select * from product
+		<where>
+			1
+			<if test="id!=null and id!=''">
+				and id=#{id}
+			</if>
+			<if test="name!=null and name!=''">
+				and name=#{name}
+			</if>
+			<if test="category!=null and category!=''">
+				and category=#{category}
+			</if>
+			<if	test="stock!=null and stock!=0">
+				and stock>0
+			</if>
+		</where>
+		<if test="price!=null and price>0">
+			order by price
+		</if>
+		<if test="price!=null and price==-1">
+			order by price desc
+		</if>
+		<if test="page!=null">
+			limit #{page.start},#{page.getSelect}
+		</if>
+	</select>
+
+	<select id="getTaste" resultMap="productBean" parameterType="Product">
+		SELECT product.* ,taste.*,product.name pname,product.price pprice,
+				taste.id tid,taste.name tname,taste.price tprice
+		FROM product
+		left join taste ON product.id = taste.pid
+		
+	</select>
+
+	<select id="getResultNums" resultType="int" parameterType="Product">
+		select count(*) from product
+		<where>
+			1
+			<if test="name!=null and name!=''">
+				and name=#{name}
+			</if>
+			<if test="category!=null and category!=''">
+				and category=#{category}
+			</if>
+			<if	test="stock!=null and stock!=0">
+				and stock>0
+			</if>
+		</where>
+		<if test="price!=null and price>0">
+			order by price
+		</if>
+		<if test="price!=null and price==-1">
+			order by price desc
+		</if>
+	</select>
+
+	<insert id="addProduct" parameterType="Product">
+		insert into product(name,category,img,price,stock,sales,description)
+					values(#{name},#{category},#{img},#{price},#{stock},#{sales},#{description})
+	</insert>
+	
+	<delete id="deleteProduct" parameterType="int">
+		delete from product where id=#{id}
+	</delete>
+	
+	<update id="updateProduct" parameterType="Product">
+		update product 
+		<set>
+			<if test="name!=null and name!=''">
+				name=#{name},
+			</if>
+			<if test="category!=null and category!=''">
+				category=#{category},
+			</if>
+			<if	test="img!=null and img!=''">
+				img=#{img},
+			</if>
+			<if	test="price!=null">
+				price=#{price},
+			</if>
+			<if	test="stock!=null">
+				stock=#{stock},
+			</if>
+			<if	test="sales!=null">
+				sales=#{sales},
+			</if>
+			<if	test="description!=null and description!=''">
+				description=#{description},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="getList" resultType="pojo.Product">
+		select * from product
+	</select>
+	
+	<select id="getTasteById" resultType="pojo.Taste">
+		select * from taste where pid=#{pid}
+	</select>
+
+	<insert id="addOrderItem" parameterType="Product">
+		insert into orderItem(orderId,pId,pName,tname,tprice,buyNum)
+					values(#{orderId},#{id},#{name},#{tasteName},#{tastePrice},#{buyNum})
+	</insert>
+</mapper>
